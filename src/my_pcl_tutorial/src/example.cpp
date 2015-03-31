@@ -11,13 +11,13 @@ ros::Publisher pub;
 void 
 cloud_cb (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)
 {
-  // Container for original & filtered data
+  // Convert to PCL data type
   pcl::PCLPointCloud2* cloud = new pcl::PCLPointCloud2; 
+  pcl_conversions::toPCL(*cloud_msg, *cloud);
+
+  // Container for filtered data
   pcl::PCLPointCloud2ConstPtr cloudPtr(cloud);
   pcl::PCLPointCloud2 cloud_filtered;
-
-  // Convert to PCL data type
-  pcl_conversions::toPCL(*cloud_msg, *cloud);
 
   // Perform the actual filtering
   pcl::VoxelGrid<pcl::PCLPointCloud2> sor;
