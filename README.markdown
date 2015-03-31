@@ -3,12 +3,14 @@ Here's my workspace for locally-installed ROS packages.
 
 # To Use
 source /opt/ros/indigo/setup.bash # use installation space this bash instance
-cd gan-gatkin-ws
+cd gan-catkin-ws
 catkin_make
 source devel/setup.bash
+echo $ROS_PACKAGE_PATH # ensure gan-catkin-ws is listed
 
 # More Information
 http://wiki.ros.org/catkin/workspaces
+http://wiki.ros.org/catkin/Tutorials/using_a_workspace
 
 # Tree
 gan-catkin-ws/         -- WORKSPACE
