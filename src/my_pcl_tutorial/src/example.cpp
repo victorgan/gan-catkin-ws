@@ -41,10 +41,11 @@ main (int argc, char** argv)
   ros::NodeHandle nh;
 
   // Create a ROS subscriber for the input point cloud
-  ros::Subscriber sub = nh.subscribe ("input", 1, cloud_cb);
+  int queue_size = 1;
+  ros::Subscriber sub = nh.subscribe ("input", queue_size, cloud_cb);
 
   // Create a ROS publisher for the output point cloud
-  pub = nh.advertise<sensor_msgs::PointCloud2> ("output", 1);
+  pub = nh.advertise<sensor_msgs::PointCloud2> ("output", queue_size);
 
   // Spin
   ros::spin ();
