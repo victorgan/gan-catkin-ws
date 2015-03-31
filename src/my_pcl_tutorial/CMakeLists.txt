@@ -105,15 +105,16 @@ include_directories(
 
 ## Declare a cpp executable
 # add_executable(my_pcl_tutorial_node src/my_pcl_tutorial_node.cpp)
+add_executable(example src/example.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(my_pcl_tutorial_node my_pcl_tutorial_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(my_pcl_tutorial_node
-#   ${catkin_LIBRARIES}
-# )
+target_link_libraries(example
+  ${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##
