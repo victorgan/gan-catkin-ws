@@ -10,6 +10,8 @@
 #include <pcl/sample_consensus/method_types.h>
 #include <pcl/segmentation/sac_segmentation.h>
 
+#include <pcl/filters/extract_indices.h>
+
 ros::Publisher pub;
 
 void 
@@ -30,14 +32,28 @@ cloud_cb (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)
 
   // Do the segmentation
   pcl::ModelCoefficients coefficients;
-  pcl::PointIndices inliers;
+  pcl::PointIndices::Ptr inliers (new pcl::PointIndices);
   seg.setInputCloud (cloud.makeShared ());
-  seg.segment (inliers, coefficients); 
+  seg.segment (*inliers, coefficients); 
+
+  pcl::ExtractIndices<pcl::PointXYZ> extract;
+  extract.setInputCloud (cloud.makeShared());
+  extract.setIndices (inliers);
+
+  pcl::PointCloud<pcl::PointXYZ> cloud_p; // positive?
+  extract.setNegative (false);
+  extract.filter (cloud_p);
+
+  pcl::PointCloud<pcl::PointXYZ> cloud_n; // negative?
+  extract.setNegative (true);
+  extract.filter (cloud_n);
   
-  // Publish the model coefficients
-  pcl_msgs::ModelCoefficients ros_coefficients;
-  pcl_conversions::fromPCL(coefficients, ros_coefficients);
-  pub.publish (ros_coefficients);
+  // Convert to ROS data type
+  sensor_msgs::PointCloud2 output;
+  pcl::toROSMsg(cloud_p, output);
+
+  // Publish the data
+  pub.publish (output);
 }
 
 int
@@ -51,7 +67,7 @@ main (int argc, char** argv)
   ros::Subscriber sub = nh.subscribe ("input", 1, cloud_cb);
 
   // Create a ROS publisher for the output model coefficients
-  pub = nh.advertise<pcl_msgs::ModelCoefficients> ("output", 1);
+  pub = nh.advertise<sensor_msgs::PointCloud2> ("output", 1);
 
   // Spin
   ros::spin ();
