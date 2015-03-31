@@ -23,11 +23,11 @@ cloud_cb (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)
 
   // Create the segmentation object
   pcl::SACSegmentation<pcl::PointXYZ> seg;
-  // Optional
-  seg.setOptimizeCoefficients (true);
-  // Mandatory
+  seg.setOptimizeCoefficients (true); // Optional
   seg.setModelType (pcl::SACMODEL_PLANE);
   seg.setMethodType (pcl::SAC_RANSAC);
+  int max_iterations = 5000; // 1000 is okay; 10000 is stable but slow
+  seg.setMaxIterations (max_iterations);
   seg.setDistanceThreshold (0.01);
 
   // Do the segmentation
@@ -36,6 +36,7 @@ cloud_cb (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)
   seg.setInputCloud (cloud.makeShared ());
   seg.segment (*inliers, coefficients); 
 
+  // Create extraction object
   pcl::ExtractIndices<pcl::PointXYZ> extract;
   extract.setInputCloud (cloud.makeShared());
   extract.setIndices (inliers);
