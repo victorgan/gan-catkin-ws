@@ -2,7 +2,7 @@
 // PCL specific includes
 #include <sensor_msgs/PointCloud2.h>
 #include <pcl_conversions/pcl_conversions.h>
-#include <pcl/conversions.h>
+#include <pcl/ros/conversions.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 
@@ -19,8 +19,6 @@ cloud_cb (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)
   pcl::PointCloud<pcl::PointXYZ> cloud;
   pcl::fromROSMsg (*cloud_msg, cloud);
 
-  pcl::ModelCoefficients coefficients;
-  pcl::PointIndices inliers;
   // Create the segmentation object
   pcl::SACSegmentation<pcl::PointXYZ> seg;
   // Optional
@@ -30,6 +28,8 @@ cloud_cb (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)
   seg.setMethodType (pcl::SAC_RANSAC);
   seg.setDistanceThreshold (0.01);
 
+  pcl::ModelCoefficients coefficients;
+  pcl::PointIndices inliers;
   seg.setInputCloud (cloud.makeShared ());
   seg.segment (inliers, coefficients); 
   
@@ -43,7 +43,7 @@ int
 main (int argc, char** argv)
 {
   // Initialize ROS
-  ros::init (argc, argv, "planarsegmentation");
+  ros::init (argc, argv, "my_pcl_tutorial");
   ros::NodeHandle nh;
 
   // Create a ROS subscriber for the input point cloud
