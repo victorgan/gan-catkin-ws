@@ -27,7 +27,7 @@ cloud_cb (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)
   seg.setOptimizeCoefficients (true); // Optional
   seg.setModelType (pcl::SACMODEL_PLANE);
   seg.setMethodType (pcl::SAC_RANSAC);
-  int max_iterations = 5000; // 1000 is okay; 10000 is stable but slow
+  int max_iterations = 3000; // 1000 is okay; 10000 is stable but slow
   seg.setMaxIterations (max_iterations);
   seg.setDistanceThreshold (0.01);
 
@@ -42,8 +42,6 @@ cloud_cb (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)
   pcl_conversions::fromPCL(coefficients, ros_coefficients);
   pub_coefficients.publish (ros_coefficients);
 
-  // Start to extract indicies from inliers
-  
   // Create extraction object
   pcl::ExtractIndices<pcl::PointXYZ> extract;
   extract.setInputCloud (cloud.makeShared());
@@ -54,10 +52,6 @@ cloud_cb (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)
   extract.setNegative (false);
   extract.filter (cloud_p);
 
-  // pcl::PointCloud<pcl::PointXYZ> cloud_n; // negative
-  // extract.setNegative (true);
-  // extract.filter (cloud_n);
-  
   // Convert to ROS data type
   sensor_msgs::PointCloud2 output;
   pcl::toROSMsg(cloud_p, output);
@@ -74,13 +68,17 @@ main (int argc, char** argv)
   ros::NodeHandle nh;
 
   // Create a ROS subscriber for the input point cloud
-  ros::Subscriber sub = nh.subscribe ("input", 1, cloud_cb);
+  int queue_size = 1;
+  char topic_inputcloud_name[] = "voxelpoints";
+  ros::Subscriber sub = nh.subscribe (topic_inputcloud_name, queue_size, cloud_cb);
 
   // Create a ROS publisher for the ground plane pointcloud 
-  pub_pointcloud = nh.advertise<sensor_msgs::PointCloud2> ("output", 1);
+  char topic_outputcloud_name[] = "plane_pointcloud";
+  pub_pointcloud = nh.advertise<sensor_msgs::PointCloud2> (topic_outputcloud_name, queue_size);
 
   // Create a ROS publisher for the output model coefficients
-  pub_coefficients = nh.advertise<pcl_msgs::ModelCoefficients> ("output2", 1);
+  char topic_outputcoeff_name[] = "plane_coefficients";
+  pub_coefficients = nh.advertise<pcl_msgs::ModelCoefficients> (topic_outputcoeff_name, queue_size);
 
   // Spin
   ros::spin ();

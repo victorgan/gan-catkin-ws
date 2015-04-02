@@ -37,15 +37,18 @@ int
 main (int argc, char** argv)
 {
   // Initialize ROS
-  ros::init (argc, argv, "voxelfilter");
+  char node_name[] = "voxelfilter";
+  ros::init (argc, argv, node_name);
   ros::NodeHandle nh;
 
   // Create a ROS subscriber for the input point cloud
   int queue_size = 1;
-  ros::Subscriber sub = nh.subscribe ("input", queue_size, cloud_cb);
+  char topic_inputcloud_name[] = "/camera/depth/points";
+  ros::Subscriber sub = nh.subscribe (topic_inputcloud_name, queue_size, cloud_cb);
 
   // Create a ROS publisher for the output point cloud
-  pub = nh.advertise<sensor_msgs::PointCloud2> ("output", queue_size);
+  char topic_outputcloud_name[] = "voxelpoints";
+  pub = nh.advertise<sensor_msgs::PointCloud2> (topic_outputcloud_name, queue_size);
 
   // Spin
   ros::spin ();
