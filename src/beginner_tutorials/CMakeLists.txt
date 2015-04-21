@@ -162,6 +162,13 @@ include_directories(
 # catkin_add_nosetests(test)
 
 # --------------------------------------------------
+# Adding a Talker
+# --------------------------------------------------
+add_executable(talker src/talker.cpp)
+target_link_libraries(talker ${catkin_LIBRARIES})
+add_dependencies(talker beginner_tutorials_generate_messages_cpp)
+
+# --------------------------------------------------
 # Adding a listener
 # --------------------------------------------------
 add_executable(listener src/listener.cpp)
