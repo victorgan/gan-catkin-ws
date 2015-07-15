@@ -24,6 +24,13 @@ For beginner_tutorials:
 http://wiki.ros.org/catkin/workspaces
 http://wiki.ros.org/catkin/Tutorials/using_a_workspace
 
+# RGBDSLAM
+RGBDSlam requires openCV's nonfree libraries.
+
+sudo add-apt-repository --yes ppa:xqms/opencv-nonfree
+sudo apt-get update 
+sudo apt-get install libopencv-nonfree-dev
+
 # Tree
 gan-catkin-ws/         -- WORKSPACE
   src/                    -- SOURCE SPACE
