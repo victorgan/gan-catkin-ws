@@ -9,6 +9,10 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   message_generation
+  cv_bridge
+  sensor_msgs
+  message_filters
+  image_transport
 )
 
 ## Generate messages in the 'msg' folder
@@ -50,3 +54,17 @@ add_dependencies(talker ${catkin_EXPORTED_TARGETS})
 add_executable(listener src/listener.cpp)
 target_link_libraries(listener ${catkin_LIBRARIES})
 add_dependencies(listener ${catkin_EXPORTED_TARGETS}) 
+
+# --------------------------------------------------
+# Adding a writedepthimage listener
+# --------------------------------------------------
+add_executable(writedepthimage src/writedepthimage.cpp)
+target_link_libraries(writedepthimage ${catkin_LIBRARIES})
+add_dependencies(writedepthimage ${catkin_EXPORTED_TARGETS}) 
+
+# --------------------------------------------------
+# Adding a writergbdimages listener
+# --------------------------------------------------
+add_executable(writergbdimages src/writergbdimages.cpp)
+target_link_libraries(writergbdimages ${catkin_LIBRARIES})
+add_dependencies(writergbdimages ${catkin_EXPORTED_TARGETS}) 
